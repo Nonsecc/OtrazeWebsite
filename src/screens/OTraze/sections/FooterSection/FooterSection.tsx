@@ -7,14 +7,14 @@ export const FooterSection = (): JSX.Element => {
     { text: "About OTraze", size: "text-[19px]" },
     { text: "Careers", size: "text-xl" },
     { text: "Blog / Insights", size: "text-xl" },
-    { text: "Read our manifesto", size: "text-[19px]" },
+    { text: "Why we built OTraze", size: "text-[19px]" },
     { text: "Privacy Policy", size: "text-[19px]" },
     { text: "Impressum", size: "text-xl" },
     { text: "LinkedIn", size: "text-[19px]" },
   ];
 
   return (
-    <footer id="about" className="w-full max-w-[1200px] mx-auto bg-white relative">
+    <footer id="about" className="w-full max-w-[1200px] mx-auto bg-white relative mb-16">
       <div className="grid grid-cols-3 gap-6 h-[584px]">
           {/* OTraze Logo Card */}
           <div className="flex flex-col gap-6">
@@ -75,12 +75,12 @@ export const FooterSection = (): JSX.Element => {
             <CardContent className="p-12 pt-[47px] pb-12">
               <nav className="flex flex-col space-y-2">
                 {navigationLinks.map((link, index) => (
-                  link.text === "Read our manifesto" ? (
+                  link.text === "Why we built OTraze" ? (
                     <button
                       key={index}
                       className={`[font-family:'Roboto',Helvetica] font-semibold text-[#459af8] ${link.size} tracking-[0] leading-[30px] hover:underline text-left`}
                       onClick={() => {
-                        window.location.href = "/manifesto";
+                        window.location.href = "/why-we-built-otraze";
                       }}
                     >
                       {link.text}
@@ -90,9 +90,9 @@ export const FooterSection = (): JSX.Element => {
                       key={index}
                       href={
                         link.text === "Privacy Policy" 
-                          ? "#privacy" 
+                          ? "/privacy" 
                           : link.text === "Impressum" 
-                          ? "#impressum" 
+                          ? "/impressum" 
                           : link.text === "LinkedIn"
                           ? "https://www.linkedin.com/company/otraze/"
                           : "#"
@@ -103,7 +103,7 @@ export const FooterSection = (): JSX.Element => {
                       onClick={(e) => {
                         if (link.text === "Privacy Policy" || link.text === "Impressum") {
                           e.preventDefault();
-                          window.location.hash = link.text === "Privacy Policy" ? "#privacy" : "#impressum";
+                          window.location.href = link.text === "Privacy Policy" ? "/privacy" : "/impressum";
                           window.scrollTo(0, 0);
                         }
                       }}

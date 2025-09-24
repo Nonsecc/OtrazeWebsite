@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { ThankYouModal } from "./thank-you-modal";
+import { submitDemoRequest, DemoRequestData } from "../../lib/emailService";
 
 interface DemoModalProps {
   isOpen: boolean;
@@ -56,6 +57,8 @@ export const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
   const [emailError, setEmailError] = useState('');
   const [formErrors, setFormErrors] = useState<{[key: string]: string}>({});
   const [showThankYou, setShowThankYou] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitError, setSubmitError] = useState('');
 
   const handleNext = () => {
     const errors: {[key: string]: string} = {};
@@ -109,10 +112,26 @@ export const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
     }
   };
 
-  const handleSubmit = () => {
-    // Handle form submission
-    console.log("Form submitted:", formData);
-    setShowThankYou(true);
+  const handleSubmit = async () => {
+    console.log('handleSubmit called with formData:', formData);
+    setIsSubmitting(true);
+    setSubmitError('');
+    
+    try {
+      const result = await submitDemoRequest(formData as DemoRequestData);
+      console.log('submitDemoRequest result:', result);
+      
+      if (result.success) {
+        setShowThankYou(true);
+      } else {
+        setSubmitError(result.message);
+      }
+    } catch (error) {
+      console.error('Error in handleSubmit:', error);
+      setSubmitError('An unexpected error occurred. Please try again.');
+    } finally {
+      setIsSubmitting(false);
+    }
   };
 
   const handleCloseThankYou = () => {
@@ -304,11 +323,25 @@ export const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
 
               {/* Action Buttons */}
               <div className="mt-4 space-y-3">
+                {submitError && (
+                  <div className="p-3 bg-red-50 border border-red-200 rounded-lg">
+                    <p className="text-sm text-red-600">{submitError}</p>
+                  </div>
+                )}
+                
                 <button
                   onClick={currentStep === 3 ? handleSubmit : handleNext}
-                  className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 transition-colors"
+                  disabled={isSubmitting}
+                  className="w-full bg-blue-600 text-white py-3 px-6 rounded-lg font-medium hover:bg-blue-700 transition-colors disabled:opacity-50 disabled:cursor-not-allowed"
                 >
-                  {currentStep === 3 ? "Get a demo" : "Next"}
+                  {isSubmitting ? (
+                    <div className="flex items-center justify-center space-x-2">
+                      <div className="w-4 h-4 border-2 border-white border-t-transparent rounded-full animate-spin"></div>
+                      <span>Submitting...</span>
+                    </div>
+                  ) : (
+                    currentStep === 3 ? "Get a demo" : "Next"
+                  )}
                 </button>
                 
                 {currentStep > 1 && (

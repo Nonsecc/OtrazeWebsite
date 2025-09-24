@@ -72,7 +72,7 @@ const App = () => {
     );
   }
   
-  if (currentPath === '/manifesto') {
+  if (currentPath === '/manifesto' || currentPath === '/why-we-built-otraze') {
     return (
       <>
         <Manifesto />

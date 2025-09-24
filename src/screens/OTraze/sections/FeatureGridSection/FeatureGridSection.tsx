@@ -61,11 +61,11 @@ export const FeatureGridSection = (): JSX.Element => {
             <Button 
               className="inline-flex items-center gap-[12.23px] px-6 py-4 bg-[#459af8] hover:bg-[#3a8ae6] rounded-full h-auto w-fit"
               onClick={() => {
-                window.location.href = "/manifesto";
+                window.location.href = "/why-we-built-otraze";
               }}
             >
               <span className="[font-family:'Roboto',Helvetica] font-semibold text-white text-[17px] leading-[17px]">
-                Read our manifesto
+                Why we built OTraze
               </span>
               <ArrowRightIcon className="w-7 h-2.5" />
             </Button>

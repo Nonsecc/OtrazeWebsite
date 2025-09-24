@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { Button } from "../../components/ui/button";
 import { ArrowRightIcon } from "lucide-react";
 import {
@@ -8,8 +8,11 @@ import {
   NavigationMenuList,
 } from "../../components/ui/navigation-menu";
 import { Card, CardContent } from "../../components/ui/card";
+import { DemoModal } from "../../components/ui/demo-modal";
 
 export const Manifesto = (): JSX.Element => {
+  const [isDemoModalOpen, setIsDemoModalOpen] = useState(false);
+
   // Scroll to top when component mounts
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -43,6 +46,7 @@ export const Manifesto = (): JSX.Element => {
     { text: "About OTraze", size: "text-[19px]" },
     { text: "Careers", size: "text-xl" },
     { text: "Blog / Insights", size: "text-xl" },
+    { text: "Why we built OTraze", size: "text-[19px]" },
     { text: "Privacy Policy", size: "text-[19px]" },
     { text: "Impressum", size: "text-xl" },
     { text: "LinkedIn", size: "text-[19px]" },
@@ -51,7 +55,7 @@ export const Manifesto = (): JSX.Element => {
   return (
     <div className="min-h-screen bg-white">
       {/* Header */}
-      <header className="w-full bg-[#f0f1f5] border-b border-gray-200">
+      <header className="w-full bg-[#f0f1f5]">
         <div className="max-w-[1200px] mx-auto px-10 py-[42px]">
           <div className="flex items-center justify-between">
             <img 
@@ -85,14 +89,17 @@ export const Manifesto = (): JSX.Element => {
             </NavigationMenu>
 
             <div className="flex items-center gap-4">
-              <Button className="h-[45px] px-6 bg-white text-[#20294c] border border-gray-300 rounded-[32px] hover:bg-gray-50">
+              <Button 
+                className="h-[45px] px-6 bg-white text-[#20294c] border border-gray-300 rounded-[32px] hover:bg-gray-50"
+                onClick={() => setIsDemoModalOpen(true)}
+              >
                 <span className="font-medium text-[#20294c] text-lg tracking-[0] leading-[normal] [font-family:'Roboto',Helvetica]">
                   Book a Demo
                 </span>
               </Button>
               <Button 
                 className="h-[45px] w-[137px] bg-[#0582fb] rounded-[32px] flex items-center justify-center gap-2 px-[17px]"
-                onClick={goBack}
+                onClick={() => scrollToSection('about')}
               >
                 <span className="font-medium text-white text-xl tracking-[0] leading-[normal] [font-family:'Roboto',Helvetica]">
                   Contact
@@ -212,7 +219,7 @@ export const Manifesto = (): JSX.Element => {
       </main>
 
       {/* Footer */}
-      <footer id="about" className="w-full max-w-[1200px] mx-auto bg-white relative">
+      <footer id="about" className="w-full max-w-[1200px] mx-auto bg-white relative mb-16">
         <div className="grid grid-cols-3 gap-6 h-[584px]">
           {/* OTraze Logo Card */}
           <div className="flex flex-col gap-6">
@@ -273,31 +280,50 @@ export const Manifesto = (): JSX.Element => {
               <CardContent className="p-12 pt-[47px] pb-12">
                 <nav className="flex flex-col space-y-2">
                   {navigationLinks.map((link, index) => (
-                    <a
-                      key={index}
-                      href={
-                        link.text === "Privacy Policy" 
-                          ? "/privacy" 
-                          : link.text === "Impressum" 
-                          ? "/impressum" 
-                          : link.text === "Read our manifesto"
-                          ? "/manifesto"
-                          : link.text === "LinkedIn"
-                          ? "https://www.linkedin.com/company/otraze/"
-                          : "#"
-                      }
-                      className={`[font-family:'Roboto',Helvetica] font-semibold text-[#459af8] ${link.size} tracking-[0] leading-[30px] hover:underline`}
-                      target={link.text === "LinkedIn" ? "_blank" : "_self"}
-                      rel={link.text === "LinkedIn" ? "noopener noreferrer" : ""}
-                      onClick={(e) => {
-                        if (link.text === "Privacy Policy" || link.text === "Impressum" || link.text === "Read our manifesto") {
-                          e.preventDefault();
-                          window.location.href = link.text === "Privacy Policy" ? "/privacy" : link.text === "Impressum" ? "/impressum" : "/manifesto";
+                    link.text === "Why we built OTraze" ? (
+                      <button
+                        key={index}
+                        className={`[font-family:'Roboto',Helvetica] font-semibold text-[#459af8] ${link.size} tracking-[0] leading-[30px] hover:underline text-left`}
+                        onClick={() => {
+                          window.location.href = "/why-we-built-otraze";
+                        }}
+                      >
+                        {link.text}
+                      </button>
+                    ) : (
+                      <a
+                        key={index}
+                        href={
+                          link.text === "Privacy Policy" 
+                            ? "/privacy" 
+                            : link.text === "Impressum" 
+                            ? "/impressum" 
+                            : link.text === "LinkedIn"
+                            ? "https://www.linkedin.com/company/otraze/"
+                            : link.text === "About OTraze" || link.text === "Careers" || link.text === "Blog / Insights"
+                            ? "/"
+                            : "#"
                         }
-                      }}
-                    >
-                      {link.text}
-                    </a>
+                        className={`[font-family:'Roboto',Helvetica] font-semibold text-[#459af8] ${link.size} tracking-[0] leading-[30px] hover:underline`}
+                        target={link.text === "LinkedIn" ? "_blank" : "_self"}
+                        rel={link.text === "LinkedIn" ? "noopener noreferrer" : ""}
+                        onClick={(e) => {
+                          if (link.text === "Privacy Policy" || link.text === "Impressum" || link.text === "About OTraze" || link.text === "Careers" || link.text === "Blog / Insights") {
+                            e.preventDefault();
+                            if (link.text === "Privacy Policy") {
+                              window.location.href = "/privacy";
+                            } else if (link.text === "Impressum") {
+                              window.location.href = "/impressum";
+                            } else {
+                              window.location.href = "/";
+                            }
+                            window.scrollTo(0, 0);
+                          }
+                        }}
+                      >
+                        {link.text}
+                      </a>
+                    )
                   ))}
                 </nav>
               </CardContent>
@@ -328,6 +354,12 @@ export const Manifesto = (): JSX.Element => {
           </div>
         </div>
       </footer>
+
+      {/* Demo Modal */}
+      <DemoModal 
+        isOpen={isDemoModalOpen} 
+        onClose={() => setIsDemoModalOpen(false)} 
+      />
     </div>
   );
 };

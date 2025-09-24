@@ -13,32 +13,27 @@ export const submitDemoRequest = async (data: DemoRequestData): Promise<{ succes
   console.log('submitDemoRequest called with data:', data);
   
   try {
-    // Create mailto link for Hostinger deployment
-    const subject = encodeURIComponent('New Demo Request - OTraze');
-    const body = encodeURIComponent(`
-New Demo Request from OTraze Website
+    // Send email directly to contact@otraze.io
+    const res = await fetch("http://localhost:3001/api/contact", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(data),
+    });
 
-Contact Information:
-- Name: ${data.firstName} ${data.lastName}
-- Email: ${data.email}
-- Phone: ${data.phone}
-- Company: ${data.company}
-- Country: ${data.country}
+    const result = await res.json();
+    console.log('Email server response:', result);
 
-Preferences:
-- Product Updates: ${data.updates ? 'Yes' : 'No'}
-- Blog Digest: ${data.blogDigest ? 'Yes' : 'No'}
-
-This request was submitted from the OTraze website demo form.
-    `);
-    
-    // Open email client
-    window.location.href = `mailto:contact@otraze.io?subject=${subject}&body=${body}`;
-    
-    return {
-      success: true,
-      message: 'E-Mail-Client geöffnet! Bitte senden Sie die E-Mail ab.'
-    };
+    if (result.success) {
+      return {
+        success: true,
+        message: 'Demo request submitted successfully! We will contact you soon.'
+      };
+    } else {
+      return {
+        success: false,
+        message: result.error || 'An error occurred. Please try again later.'
+      };
+    }
   } catch (error) {
     console.error('Error submitting demo request:', error);
     return {

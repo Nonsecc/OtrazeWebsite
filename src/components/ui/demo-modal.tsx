@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { ThankYouModal } from "./thank-you-modal";
-import { submitDemoRequest, DemoRequestData } from "../../lib/emailService";
 
 interface DemoModalProps {
   isOpen: boolean;
@@ -118,14 +117,29 @@ export const DemoModal: React.FC<DemoModalProps> = ({ isOpen, onClose }) => {
     setSubmitError('');
     
     try {
-      const result = await submitDemoRequest(formData as DemoRequestData);
-      console.log('submitDemoRequest result:', result);
+      // For Hostinger static hosting, we'll use mailto as fallback
+      const emailBody = `
+Demo Request from OTraze Website
+
+Contact Information:
+- Name: ${formData.firstName} ${formData.lastName}
+- Email: ${formData.email}
+- Phone: ${formData.phone}
+- Company: ${formData.company}
+- Country: ${formData.country}
+
+Preferences:
+- Product Updates: ${formData.updates ? 'Yes' : 'No'}
+- Blog Digest: ${formData.blogDigest ? 'Yes' : 'No'}
+
+This request was submitted from the OTraze website demo form.
+      `.trim();
       
-      if (result.success) {
-        setShowThankYou(true);
-      } else {
-        setSubmitError(result.message);
-      }
+      const mailtoLink = `mailto:contact@otraze.io?subject=New Demo Request - OTraze&body=${encodeURIComponent(emailBody)}`;
+      window.open(mailtoLink, '_blank');
+      
+      // Show success message
+      setShowThankYou(true);
     } catch (error) {
       console.error('Error in handleSubmit:', error);
       setSubmitError('An unexpected error occurred. Please try again.');
